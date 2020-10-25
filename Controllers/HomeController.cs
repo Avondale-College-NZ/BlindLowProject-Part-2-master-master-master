@@ -1,5 +1,6 @@
 ﻿using BlindLowVisionProject.Models;
 using BlindLowVisionProject.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -7,6 +8,7 @@ using System.IO;
 
 namespace BlindLowVisionProject.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ICustomerRepository _customerRepository;
@@ -18,13 +20,19 @@ namespace BlindLowVisionProject.Controllers
             _customerRepository = customerRepository;
             this.hostingEnvironment = hostingEnvironment;
         }
+
+        [AllowAnonymous]
         public ViewResult Index()
         {
             var model = _customerRepository.GetAllCustomers();
             return View(model);
-        }       
-        public ViewResult Details(int? id, string name)
+        }
+
+        [AllowAnonymous]
+        public ViewResult Details(int? id)
         {
+            //throw new Exception("Error in Details View");
+
             Customer customer = _customerRepository.GetCustomer(id.Value);
 
             if(customer == null)
